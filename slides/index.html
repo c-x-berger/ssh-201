@@ -61,6 +61,21 @@
                     </ul>
                 </section>
                 <section>
+                    <section>
+                        <h3>Tunneling / Port Forwarding</h3>
+                        <p>Map a port on one machine to another</p>
+                        <p>Make remote services available at local addresses, or vice versa</p>
+                    </section>
+                    <section>
+                        <h3>Why?</h3>
+                        <p>Honestly? <span class="fragment fade-in">Usually, to bypass a firewall.</span></p>
+                    </section>
+                    <section>
+                        <h3>Map a local port to a remote port</h3>
+                        <p><code>ssh -L 5901:localhost:5901 fred@example.org</code> routes traffic bound for <code>localhost:5901</code> to <code>example.org:5901</code></p>
+                    </section>
+                </section>
+                <section>
                     <!-- This should be the last section! -->
                     <h3>Multiplexing</h3>
                 </section>
