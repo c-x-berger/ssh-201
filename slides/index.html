@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>SSH 201</title>
+
+        <link rel="stylesheet" href="css/reset.css">
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/black.css">
+
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="lib/css/monokai.css">
+
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section data-background-image="https://ttauthority.xyz/linx/selif/x0bnv31p.png" >
+                    <div style="background-color: rgba(0, 0, 0, 0.5)">
+                        <h1>SSH 201</h1>
+                        <h3>It does more than remote shells?</h3>
+                        <p>Caleb X. Berger / <code>c-x-berger</code></p>
+                    </div>
+                </section>
+                <section>
+                    <section>
+                        <p>Topics covered in <del>CS 193</del> SSH 101:
+                            <ul>
+                                <li>Using SSH as a remote shell</li>
+                                <li>Using <code>scp</code></li>
+                                <li>Remote desktop <span class="fragment fade-in-then-semi-out">(but only through a GUI)</span></li>
+                            </ul>
+                        </p>
+                    </section>
+                    <section>
+                        <h3><code>scp</code> review</h3>
+                        <table>
+                            <tr><th>From</th><th>To</th><th>Command</th></tr>
+                            <tr><td>Local</td><td>Remote</td><td><code>scp file user@remote:~/dest/dir</code></td>
+                            <tr><td>Remote</td><td>Local</td><td><code>scp user@remote:~/source/file ~/local/copy.txt</code></td>
+                        </table>
+                        <p>You can recursively copy entire directories with the <code>-r</code> flag</p>
+                    </section>
+                </section>
+                <section>
+                    <p>Topics covered here:</p>
+                    <ul>
+                        <li>Port Forwarding and SOCKS proxying</li>
+                        <li>Multiplexing</li>
+                        <li>Escape Sequences / "The Menu"</li>
+                    </ul>
+                </section>
+                <section>
+                    <!-- This should be the last section! -->
+                    <h3>Multiplexing</h3>
+                </section>
+                <section>
+                    <p>These slides are on GitHub at <a href="https://github.com/c-x-berger/ssh-201"><code>https://github.com/c-x-berger/ssh-201</code></a></p>
+                    <p>The slide deck is also served as <a href="https://c-x-berger.github.io/ssh-201/slides/index.html">a GitHub pages site.</a></p>
+                </section>
+            </div>
+        </div>
+
+        <script src="js/reveal.js"></script>
+
+        <script>
+            // More info about config & dependencies:
+            // - https://github.com/hakimel/reveal.js#configuration
+            // - https://github.com/hakimel/reveal.js#dependencies
+            Reveal.initialize({
+                dependencies: [
+                    { src: 'plugin/markdown/marked.js' },
+                    { src: 'plugin/markdown/markdown.js' },
+                    { src: 'plugin/notes/notes.js', async: true },
+                    { src: 'plugin/highlight/highlight.js', async: true }
+                ]
+            });
+        </script>
+    </body>
+</html>
