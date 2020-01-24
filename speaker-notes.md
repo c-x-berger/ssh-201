@@ -1,7 +1,21 @@
+## Certificates and Signing
+- both host and client keys can be signed by a CA, a bit like HTTPS
+- benefits:
+  - key expiration
+  - as long as a party trusts the CA, no need to update authorized_keys / known_hosts
+### Use
+- generating a CA cert: `ssh-keygen -t ed25519 -f file-name-ca -C "Comment!"`
+- sign a host key: `ssh-keygen -s file-name-ca -h -n host.name -V +52w -I host.name-key keyfile.pub`
+  - sign `-h`ost key `keyfile.pub` with `file-name-ca` for `host.name`, and keep `-V`alid for 52 weeks
+    - the `-I` arg is used for logging etc
+  - writes the certificate to `${keyfile}-cert.pub`, may need root
+- use a shiny new host key cert with `HostCertificate /where/is/${keyfile}-cert.pub`
+- client must trust CA with `@cert-authority whatever-hosts $(cat file-name-ca.pub)` in `known_hosts`
+
 ## The Menu
 - get help with <kbd>Enter</kbd>, <kbd>~</kbd>, <kbd>?</kbd>
   - Sequence, not combination
-  - On a lot of keyboards, this expands to <kbd>Enter</kbd>, <kbd>Shift</kbd> + <kbd>`</kbd>, <kbd>Shift</kbd> + <kbd>/</kbd>
+  - On a lot of keyboards, this expands to <kbd>Enter</kbd>, <kbd>Shift</kbd> + <kbd>\`</kbd>, <kbd>Shift</kbd> + <kbd>/</kbd>
 - Once you input one, you can essentially perform as many as you can without hitting <kbd>Enter</kbd>
 - List of immediately interesting options:
   - `~C`: add port forwards (demo with `-L 8000:localhost:443`)
