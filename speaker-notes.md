@@ -3,7 +3,7 @@
 - both host and client keys can be signed by a CA, a bit like HTTPS
 - benefits:
   - key expiration
-  - as long as a party trusts the CA, no need to update authorized_keys / known_hosts
+  - as long as a server / client trusts the CA, no need to update authorized_keys / known_hosts
 
 ### Use
 - generating a CA cert: `ssh-keygen -t ed25519 -f file-name-ca -C "Comment!"`
