@@ -25,10 +25,9 @@
     <body>
         <div class="reveal">
             <div class="slides">
-                <section data-background-image="https://ttauthority.xyz/linx/selif/x0bnv31p.png" >
+                <section data-background-image="https://ttauthority.xyz/linx/selif/x0bnv31p.png">
                     <div style="background-color: rgba(0, 0, 0, 0.5)">
                         <h1>SSH 201</h1>
-                        <h3>It does more than remote shells?</h3>
                         <p>Caleb X. Berger / <code>c-x-berger</code></p>
                     </div>
                 </section>
@@ -61,23 +60,86 @@
                     </ul>
                 </section>
                 <section>
+                    <h3>Tunneling / Port Forwarding</h3>
+                    <p>Map a port on one machine to another</p>
+                    <p>Make remote services available at local addresses, or vice versa</p>
+                </section>
+                <section>
+                    <h3>Why?</h3>
+                    <p>Honestly? <span class="fragment fade-in">Usually, to bypass a firewall.</span></p>
+                </section>
+                <section>
                     <section>
-                        <h3>Tunneling / Port Forwarding</h3>
-                        <p>Map a port on one machine to another</p>
-                        <p>Make remote services available at local addresses, or vice versa</p>
+                        <h3>Forward Tunneling</h3>
+                        <p>
+                            <code>ssh -L 123:localhost:456 fred@example.org</code>
+                            routes traffic bound for <code>localhost:123</code> to
+                            <code>example.org:456</code> via <code>example.org</code>
+                        </p>
+                        <p>
+                            Traffic can also pass through the remote to an even
+                            further host: <code>-L 8000:example.com:443 example.org</code>
+                        </p>
+                        <p>You probably want to add <code>-fNT</code> to be "nicer"</p>
                     </section>
                     <section>
-                        <h3>Why?</h3>
-                        <p>Honestly? <span class="fragment fade-in">Usually, to bypass a firewall.</span></p>
+                        <a href="https://i.stack.imgur.com/a28N8.png">
+                            <img src="https://i.stack.imgur.com/a28N8.png" height="480" alt="Diagram of a forward tunnel">
+                        </a>
                     </section>
                     <section>
-                        <h3>Map a local port to a remote port</h3>
-                        <p><code>ssh -L 5901:localhost:5901 fred@example.org</code> routes traffic bound for <code>localhost:5901</code> to <code>example.org:5901</code></p>
+                        <h3>The Nice SSH Tunnel</h3>
+                        <code>ssh -fNT -L localport:destination:port user@viahost</code>
+                    </section>
+                </section>
+                <section>
+                    <h3>Not All Magic is Perfect</h3>
+                    <p>
+                        Many hosts read e.g. the HTTP <code>Host</code> header
+                        and either block or act very strangely when they see an
+                        unexpected value
+                    </p>
+                    <p class="fragment fade-in">We will see a way around this later</p>
+                </section>
+                <section>
+                    <section>
+                        <h3>Reverse Tunneling</h3>
+                        <p>
+                            <code>ssh -R 123:localhost:456 fred@example.org</code>
+                            sends traffic from <code>example.org:123</code> to
+                            <code>localhost:456</code>
+                        </p>
+                        <p>
+                            Ask a remote to forward traffic to <em>you</em> (or
+                            through you, anyway)
+                        </p>
+                    </section>
+                    <section>
+                        <a href="https://i.stack.imgur.com/4iK3b.png">
+                            <img src="https://i.stack.imgur.com/4iK3b.png" height="480" alt="Diagram of a reverse tunnel">
+                        </a>
                     </section>
                 </section>
                 <section>
                     <!-- This should be the last section! -->
                     <h3>Multiplexing</h3>
+                </section>
+                <section>
+                    <h3>Credits</h3>
+                    <ul>
+                        <li>Thomas Kennel for giving me enough material to actually make this a talk</li>
+                        <li>
+                            erik on unix.se for the
+                            <a href="https://unix.stackexchange.com/a/118650/125869">tunneling diagrams</a>
+                        </li>
+                        <li>explainshell.com for making man pages easier</li>
+                        <li>
+                            reddit user dyerjohn42 for posting the excellent opening image
+                            <a href="https://redd.it/eqj6q4">
+                                (originally from <em>The Internet Guide for New Users</em>)
+                            </a>
+                        </li>
+                    </ul>
                 </section>
                 <section>
                     <p>These slides are on GitHub at <a href="https://github.com/c-x-berger/ssh-201"><code>https://github.com/c-x-berger/ssh-201</code></a></p>
