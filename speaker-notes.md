@@ -1,6 +1,8 @@
 # SSH 201 - Speaker's Notes
 - go through opening topics (`scp`, keys) as quick as possible
-
+- Ed25519: Edwards-curve Digital Signature Algorithm using SHA-512 and Curve25519
+  - Curve was released in 2005, came to attention in 2013 with Snowden revelations
+- Old RHEL 6 ECN machines mean some members have RSA and ed25519 keys, probably managed with ssh-agent and good config
 
 ## Tunneling / Forwarding
 [Thank you, Stack Exchange](https://unix.stackexchange.com/a/118650/125869)

@@ -70,6 +70,32 @@
                     </ul>
                 </section>
                 <section>
+                    <section>
+                        <h3>A quick note on keys</h3>
+                        <p><code>man ssh-keygen</code> will tell you there are four key types</p>
+                        <p class="fragment fade-in">You know, like a <em>liar.</em></p>
+                        <p class="fragment fade-in">
+                            Practically, three work for most hosts:
+                            <ul class="fragment fade-in">
+                                <li><code>ecdsa</code></li>
+                                <li><code>rsa</code></li>
+                                <li><code>ed25519</code></li>
+                            </ul>
+                        </p>
+                    </section>
+                    <section>
+                        <h3>wat</h3>
+                        <p><code>dsa</code> has systemic flaws that can leak the private key - yikes!</p>
+                        <p>RSA will work on everything, but requires big keys</p>
+                        <p>
+                            Ed25519 is the favorite child - short keys, doesn't have DSA's issues...
+                            <span class="fragment fade-in">but it's new enough that some Purdue machines don't support it</span>
+                        </p>
+                        <p class="fragment fade-in">Like RHEL 6 machines in the ECN.</p>
+                        <p class="fragment fade-in">Hail Purdue.</p>
+                    </section>
+                </section>
+                <section>
                     <h3>Tunneling / Port Forwarding</h3>
                     <p>Map a port on one machine to another</p>
                     <p>Make remote services available at local addresses, or vice versa</p>
