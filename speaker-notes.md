@@ -1,6 +1,20 @@
 # SSH 201 - Speaker's Notes
 - go through opening topics (`scp`, keys) as quick as possible
 
+
+## Tunneling / Forwarding
+[Thank you, Stack Exchange](https://unix.stackexchange.com/a/118650/125869)
+
+Regular tunnels map a local port to a remote port. Traffic destined for that
+local port is therefore forwarded to the mapped remote port.  
+The remote host can forward the traffic to yet another host if need be
+(`-L localport:farfaraway:farport nearhost`).
+
+A reverse tunnel maps a remote port to a local port. So traffic destined for
+that port on **the remote machine** is instead directed to a local port.  
+Your local host can send the traffic to another host if need be
+(`-R remoteport:nearhost:nearport remotehost`).
+
 ## Certificates and Signing
 - both host and client keys can be signed by a CA, a bit like HTTPS
 - benefits:
@@ -22,19 +36,6 @@
 #### Sign a user
 `ssh-keygen -s file-name-ca -n your,usernames -V +52w -I user key.pub`
 - server must trust CA with `TrustedUserCAKeys /path/to/file-name-ca.pub`
-
-## Tunneling / Forwarding
-[Thank you, Stack Exchange](https://unix.stackexchange.com/a/118650/125869)
-
-Regular tunnels map a local port to a remote port. Traffic destined for that
-local port is therefore forwarded to the mapped remote port.  
-The remote host can forward the traffic to yet another host if need be
-(`-L localport:farfaraway:farport nearhost`).
-
-A reverse tunnel maps a remote port to a local port. So traffic destined for
-that port on **the remote machine** is instead directed to a local port.  
-Your local host can send the traffic to another host if need be
-(`-R remoteport:nearhost:nearport remotehost`).
 
 ## The Menu
 - get help with <kbd>Enter</kbd>, <kbd>~</kbd>, <kbd>?</kbd>
