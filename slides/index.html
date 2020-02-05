@@ -9,6 +9,15 @@
         <link rel="stylesheet" href="css/reset.css">
         <link rel="stylesheet" href="css/reveal.css">
         <link rel="stylesheet" href="css/theme/black.css">
+        <style type="text/css">
+            kbd {
+                font-family: monospace;
+                border: 1px solid darkgrey;
+                padding: 3px 5px;
+                border-radius: 5px;
+                box-shadow: inset 0 -3px 0 #959da5;
+            }
+        </style>
 
         <!-- Theme used for syntax highlighting of code -->
         <link rel="stylesheet" href="lib/css/monokai.css">
@@ -54,7 +63,8 @@
                 <section>
                     <p>Topics covered here:</p>
                     <ul>
-                        <li>Port Forwarding and SOCKS proxying</li>
+                        <li>Tunneling and SOCKS proxying</li>
+                        <li>SSH Certificates</li>
                         <li>Multiplexing</li>
                         <li>Escape Sequences / "The Menu"</li>
                     </ul>
@@ -106,10 +116,9 @@
                         <h3>Reverse Tunneling</h3>
                         <p>
                             <code>ssh -R 123:localhost:456 fred@example.org</code>
-                            sends traffic from <code>example.org:123</code> to
-                            <code>localhost:456</code>
+                            <span class="fragment fade-in">sends traffic from <code>example.org:123</code> to <code>localhost:456</code></span>
                         </p>
-                        <p>
+                        <p class="fragment fade-in">
                             Ask a remote to forward traffic to <em>you</em> (or
                             through you, anyway)
                         </p>
@@ -119,10 +128,154 @@
                             <img src="https://i.stack.imgur.com/4iK3b.png" height="480" alt="Diagram of a reverse tunnel">
                         </a>
                     </section>
+                    <section>
+                        <h3>The Nice Reverse SSH Tunnel</h3>
+                        <code>ssh -fNT -R srcport:destination:destport user@srchost</code>
+                    </section>
+                </section>
+                <section>
+                    <h3>Put your SOCKS on</h3>
+                    <p class="fragment fade-in">
+                        We saw that some services freak out when tunneled to
+                    </p>
+                    <p class="fragment fade-in">
+                        SOCKS is a way of forwarding that's actually meant to
+                        be a proxy.
+                        <span class="fragment fade-in">
+                            As such, the application (e.g. your browser) has to
+                            support it
+                        </span>
+                    </p>
+                    <code class="fragment fade-in">
+                        ssh -D 1337 -f<strong>C</strong>NT fred@example.org
+                    </code>
+                </section>
+                <section>
+                    <h3>Certificates</h3>
+                    <p>Sign SSH keys with some given "master key"</p>
+                    <p>
+                        A host can authorize any keys signed by some root
+                        certificate for authentication, and clients may choose
+                        to trust host keys signed by some root.
+                    </p>
+                    <p>
+                        Useful within organizations to reduce friction with new
+                        keys/hosts
+                    </p>
+                </section>
+                <section>
+                    <section>
+                        <h3>Step 1: Create a Root Certificate</h3>
+                        <p>This will later sign our host and user keys</p>
+                        <pre><code class="hljs sh">ssh-keygen -t ed25519 -f example-ca -C "Comment"</code></pre>
+                        <p>
+                            Keep <code>example-ca</code> well-secured!
+                            <code>example-ca.pub</code> should go to wherever
+                            you intend to trust signed keys.
+                        </p>
+                    </section>
+                    <section>
+                        <h3>A note on algorithms</h3>
+                        I'm using ed25519, but RSA is also fine. You can sign
+                        RSA keys with ed25519 and vice versa.
+                        <p class="fragment fade-in">
+                            Just be sure to set keysize on RSA keys.
+                        </p>
+                    </section>
+                </section>
+                <section>
+                    <h3>Step 2: Sign a user's key</h3>
+                    <pre><code class="hljs bash" data-trim>
+ssh-keygen -s example-ca \
+    -n your,usernames \
+    -V +52w \
+    -I logging-name \
+    key.pub
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>Step 2.5: Trust signed users</h3>
+                    <ol>
+                        <li>Place <code>example-ca.pub</code> on the host</li>
+                        <li>
+                            In <code>sshd_config</code>, add a line
+                            <code>TrustedUserCAKeys /path/to/example-ca.pub</code>
+                        </li>
+                    </ol>
+                    After that, any key signed by <code>example-ca</code> is
+                    allowed for the user(s) in that key's principals list.
+                    <span class="fragment fade-in">
+                        In our example, that would be <code>your,usernames</code>
+                    </span>
+                </section>
+                <section>
+                    <h3>Step 3: Sign a host key</h3>
+                    Literally the same as user keys but with <code>-h</code> in there.<br>
+                    <pre><code class="hljs bash" data-trim>
+ssh-keygen -h -s example-ca \
+    -n host.example.com \
+    -V +52w \
+    -I host.name-key \
+    keyfile.pub
+                    </code></pre>
+                    <p>Add <code>HostCertificate /path/to/keyfile-cert.pub</code> to <code>sshd_config</code></p>
+                </section>
+                <section>
+                    <h3>Step 3.5: Trust signed hosts</h3>
+                    <pre><code class="hljs apache" data-trim>
+@cert-authority *.purdue.edu ssh-ed25519 ...
+                    </code></pre>
+                    <p class="fragment fade-in">
+                        Add <code>@cert-authority some,hosts XXX</code> to
+                        <code>known_hosts</code> where <code>XXX</code> is the
+                        contents of <code>example-ca.pub</code>
+                    </p>
                 </section>
                 <section>
                     <!-- This should be the last section! -->
                     <h3>Multiplexing</h3>
+                    <h4>nyoom</h4>
+                    <p>Speed up SSH by only logging in once</p>
+                    <p class="fragment fade-in">
+                        Specifically, after first login TCP/IP connection is kept open for a set time after exit.
+                    </p>
+                    <p>And "all" we have to to is edit <code>~/.ssh/config</code></p>
+                </section>
+                <section>
+                    <p>Example multiplexing configuration:</p>
+                    <pre><code class="hljs apache" data-trim>
+Host *.cs.purdue.edu
+    # user@host:port
+    ControlPath ~/.ssh/controls/%r@%h:%p
+    # use master connection iff available
+    ControlMaster auto
+    # keep master connection alive for 10 minutes after last session ends
+    ControlPersist 10m
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>This complicates the tunnel</h3>
+                    <p>Options like <code>-L</code>, <code>-R</code> will add a new forward, but it won't close until the master closes as well</p>
+                    <p>We also can't change forwarded ports on the fly</p>
+                    <p>To <em>cancel</em> a forward on a master connection, use <code>ssh -O cancel -L ... user@host</code></p>
+                </section>
+                <section>
+                    <h3>Escape Sequences/"The Menu"</h3>
+                    <p>Special key sequences that instruct SSH to do particular things "mid-flight"</p>
+                    <p class="fragment fade-in">These are used during a session to alter <em>that session.</em></p>
+                    <p class="fragment fade-in">Some are client-side only, not dependent on host</p>
+                </section>
+                <section>
+                    <h3>Entering an escape sequence</h3>
+                    <p>Press, in order, one at a time, <kbd>Enter</kbd>, <kbd>~</kbd>, <kbd>?</kbd></p>
+                    <p>
+                        Examples:
+                        <ul>
+                            <li><code>~.</code> kills that session and all multiplexed sessions</li>
+                            <li><code>~C</code> is really interesting (the "SSH command-line") <span class="fragment fade-in">but is unavailable on multiplexed</span></li>
+                            <li><code>~V</code>/<code>~v</code> increases/decreases SSS's verbosity</li>
+                        </ul>
+                    </p>
                 </section>
                 <section>
                     <h3>Credits</h3>
