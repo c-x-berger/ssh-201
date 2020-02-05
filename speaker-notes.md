@@ -15,7 +15,7 @@
 
 - sign `-h`ost key `keyfile.pub` with `file-name-ca` for `host.name`, and keep `-V`alid for 52 weeks
   - the `-I` arg is used for logging etc
-- writes the certificate to `$(pwd)/${keyfile}-cert.pub`, may need root
+- writes cert next to `keyfile.pub` as `keyfile-cert.pub`. Will probably need root
 - use a shiny new host key cert with `HostCertificate /where/is/${keyfile}-cert.pub` in `sshd_config`
 - client may trust CA with `@cert-authority whatever-hosts $(cat file-name-ca.pub)` in `known_hosts`
 
